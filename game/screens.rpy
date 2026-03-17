@@ -192,6 +192,7 @@ screen main_menu:
         textbutton _("Start Game") action Start()
         textbutton _("Load Game") action ShowMenu("load")
         textbutton _("Preferences") action ShowMenu("preferences")
+        textbutton _("About") action ShowMenu("about")
         textbutton _("Help") action Help()
         textbutton _("Quit") action Quit(confirm=False)
 
@@ -199,6 +200,71 @@ init -2 python:
 
     # Make all the main menu buttons be the same size.
     style.mm_button.size_group = "mm"
+
+
+##############################################################################
+# About
+#
+# Screen that introduces the characters of the game.
+
+screen about:
+
+    # This ensures that any other menu screen is replaced.
+    tag menu
+
+    # The background of the game menu.
+    window:
+        style "gm_root"
+
+    # Include the navigation so the player can return to the main menu.
+    use navigation
+
+    frame:
+        xalign 0.5
+        yalign 0.1
+        xpadding 20
+        ypadding 20
+        xmaximum 740
+
+        has vbox
+        spacing 20
+
+        label _("Meet the Characters") xalign 0.5
+
+        hbox:
+            spacing 30
+            xalign 0.5
+
+            # SudoCat bio
+            vbox:
+                spacing 8
+                xmaximum 330
+
+                add "images/characters/sudocat/sudocat-normal.png" xalign 0.5
+
+                label _("SudoCat") xalign 0.5
+
+                text _("A mischievous cat who loves getting into trouble and hacking cool but chaotic projects. SudoCat thrives on creative chaos and is always cooking up the next wild scheme at the SudoRoom makerspace in Oakland."):
+                    style "about_desc"
+
+            # Robot Arm bio
+            vbox:
+                spacing 8
+                xmaximum 330
+
+                null height 30
+
+                label _("Robot Arm") xalign 0.5
+
+                text _("More uptight and precise, Robot Arm only draws with perfectly measured lines. Robot Arm clashes with SudoCat's chaotic energy, yet together they go on zany adventures at the SudoRoom in Oakland."):
+                    style "about_desc"
+
+        textbutton _("Back to Main Menu") action ShowMenu("main_menu") xalign 0.5
+
+init -2 python:
+    style.about_desc.set_parent(style.default)
+    style.about_desc.text_align = 0.0
+    style.about_desc.layout = "subtitle"
 
 
 ##############################################################################
