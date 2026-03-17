@@ -207,6 +207,11 @@ init -2 python:
 #
 # Screen that introduces the characters of the game.
 
+init -2 python:
+    style.about_desc.set_parent(style.default)
+    style.about_desc.text_align = 0.0
+    style.about_desc.layout = "subtitle"
+
 screen about:
 
     # This ensures that any other menu screen is replaced.
@@ -260,11 +265,6 @@ screen about:
                     style "about_desc"
 
         textbutton _("Back to Main Menu") action ShowMenu("main_menu") xalign 0.5
-
-init -2 python:
-    style.about_desc.set_parent(style.default)
-    style.about_desc.text_align = 0.0
-    style.about_desc.layout = "subtitle"
 
 
 ##############################################################################
