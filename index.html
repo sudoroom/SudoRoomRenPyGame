@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SudoRoom – A Love Story</title>
+  <style>
+    /* ── Base ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: 'Georgia', serif;
+      background: #0a0010;
+      color: #f0e6ff;
+    }
+
+    /* ── Background scene ───────────────────────────────────── */
+    #bg {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, #2a0060 0%, transparent 65%),
+        radial-gradient(ellipse at 80% 80%, #001a40 0%, transparent 60%),
+        linear-gradient(170deg, #07000f 0%, #0e0025 50%, #000d1a 100%);
+    }
+
+    /* startpage art as a soft parallax layer */
+    #scene-bg {
+      position: fixed; inset: 0;
+      background: url('game/images/backgrounds/startpage.png') center center / cover no-repeat;
+      opacity: 0.18;
+      mix-blend-mode: screen;
+    }
+
+    /* ── Sparkle canvas ─────────────────────────────────────── */
+    #sparkle-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Content wrapper ────────────────────────────────────── */
+    #stage {
+      position: relative;
+      z-index: 10;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    /* ── Title art ──────────────────────────────────────────── */
+    #title-art {
+      width: min(560px, 88vw);
+      filter: drop-shadow(0 0 32px #b57bee) drop-shadow(0 0 8px #fff9);
+      animation: titleFloat 6s ease-in-out infinite;
+      user-select: none;
+      margin-bottom: -12px;
+    }
+
+    @keyframes titleFloat {
+      0%, 100% { transform: translateY(0px) rotate(-0.4deg); }
+      50%       { transform: translateY(-14px) rotate(0.4deg); }
+    }
+
+    /* ── Subtitle ───────────────────────────────────────────── */
+    #subtitle {
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #d4aaff;
+      text-shadow: 0 0 18px #b57bee, 0 0 4px #fff;
+      animation: subtitlePulse 3s ease-in-out infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes subtitlePulse {
+      0%, 100% { opacity: 0.85; }
+      50%       { opacity: 1; text-shadow: 0 0 28px #e0aaff, 0 0 8px #fff; }
+    }
+
+    /* ── Cat character ──────────────────────────────────────── */
+    #sudocat {
+      width: min(280px, 52vw);
+      filter: drop-shadow(0 0 24px #d4aaff99) drop-shadow(0 0 4px #fff8);
+      animation: catFloat 5s ease-in-out infinite;
+      user-select: none;
+      margin-bottom: 8px;
+    }
+
+    @keyframes catFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      40%       { transform: translateY(-18px) scale(1.03); }
+      80%       { transform: translateY(-6px) scale(0.98); }
+    }
+
+    /* ── Sparkle ring around the cat ───────────────────────── */
+    .orbit-ring {
+      position: absolute;
+      width: min(340px, 64vw);
+      height: min(340px, 64vw);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: orbitSpin 12s linear infinite;
+    }
+
+    .orbit-dot {
+      position: absolute;
+      top: -6px; left: calc(50% - 6px);
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+
+    .orbit-dot:nth-child(1)  { background: #ff8fcc; box-shadow: 0 0 10px #ff8fcc, 0 0 4px #fff; transform-origin: 6px calc(min(170px, 32vw) + 6px); transform: rotate(0deg)   translateY(calc(-1 * min(170px, 32vw))); }
+    .orbit-dot:nth-child(2)  { background: #8fd4ff; box-shadow: 0 0 10px #8fd4ff, 0 0 4px #fff; transform-origin: 6px calc(min(170px, 32vw) + 6px); transform: rotate(60deg)  translateY(calc(-1 * min(170px, 32vw))); }
+    .orbit-dot:nth-child(3)  { background: #aaffb0; box-shadow: 0 0 10px #aaffb0, 0 0 4px #fff; transform-origin: 6px calc(min(170px, 32vw) + 6px); transform: rotate(120deg) translateY(calc(-1 * min(170px, 32vw))); }
+    .orbit-dot:nth-child(4)  { background: #fffb8f; box-shadow: 0 0 10px #fffb8f, 0 0 4px #fff; transform-origin: 6px calc(min(170px, 32vw) + 6px); transform: rotate(180deg) translateY(calc(-1 * min(170px, 32vw))); }
+    .orbit-dot:nth-child(5)  { background: #ff8fcc; box-shadow: 0 0 10px #ff8fcc, 0 0 4px #fff; transform-origin: 6px calc(min(170px, 32vw) + 6px); transform: rotate(240deg) translateY(calc(-1 * min(170px, 32vw))); }
+    .orbit-dot:nth-child(6)  { background: #c98fff; box-shadow: 0 0 10px #c98fff, 0 0 4px #fff; transform-origin: 6px calc(min(170px, 32vw) + 6px); transform: rotate(300deg) translateY(calc(-1 * min(170px, 32vw))); }
+
+    @keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+    /* ── Cat + orbit wrapper ────────────────────────────────── */
+    #cat-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: min(340px, 64vw);
+      height: min(340px, 64vw);
+      margin-bottom: 4px;
+    }
+    #cat-wrap #sudocat {
+      position: absolute;
+    }
+
+    /* ── CTA button ─────────────────────────────────────────── */
+    #cta-btn {
+      display: inline-block;
+      padding: 0.75em 2.6em;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-family: 'Georgia', serif;
+      letter-spacing: 0.14em;
+      color: #fff;
+      background: linear-gradient(135deg, #7b2fff 0%, #d44fff 50%, #ff6bb5 100%);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 28px #b57bee, 0 0 8px #fff6, inset 0 1px 0 #fff3;
+      transition: transform 0.15s, box-shadow 0.15s;
+      animation: btnGlow 2.5s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+      margin-top: 18px;
+    }
+
+    #cta-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, #fff3 100%);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    #cta-btn:hover, #cta-btn:focus {
+      transform: scale(1.07) translateY(-3px);
+      box-shadow: 0 0 48px #d44fff, 0 0 16px #fff6;
+      outline: none;
+    }
+
+    @keyframes btnGlow {
+      0%, 100% { box-shadow: 0 0 28px #b57bee, 0 0 6px #fff4; }
+      50%       { box-shadow: 0 0 52px #d44fff, 0 0 18px #fff6; }
+    }
+
+    /* ── Footer links ───────────────────────────────────────── */
+    #footer {
+      position: fixed;
+      bottom: 14px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: #9966cc88;
+      z-index: 20;
+    }
+
+    #footer a {
+      color: #c09dff99;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    #footer a:hover { color: #e0aaff; }
+  </style>
+</head>
+<body>
+
+<!-- background layers -->
+<div id="bg"></div>
+<div id="scene-bg"></div>
+
+<!-- animated sparkle canvas -->
+<canvas id="sparkle-canvas"></canvas>
+
+<!-- main content -->
+<div id="stage">
+
+  <!-- title logo -->
+  <img id="title-art"
+       src="images/SudoRoom_A_Love_Story.png"
+       alt="SudoRoom – A Love Story" />
+
+  <!-- subtitle -->
+  <p id="subtitle">A Visual Novel</p>
+
+  <!-- cat with orbit sparkles -->
+  <div id="cat-wrap">
+    <div class="orbit-ring">
+      <span class="orbit-dot"></span>
+      <span class="orbit-dot"></span>
+      <span class="orbit-dot"></span>
+      <span class="orbit-dot"></span>
+      <span class="orbit-dot"></span>
+      <span class="orbit-dot"></span>
+    </div>
+    <img id="sudocat"
+         src="game/images/characters/sudocat/sudocat-normal.png"
+         alt="SudoCat, the main character" />
+  </div>
+
+  <!-- CTA button -->
+  <a id="cta-btn"
+     href="https://romyilano.itch.io/sudoroom-a-love-story"
+     target="_blank"
+     rel="noopener noreferrer">
+    ✦ Continue ✦
+  </a>
+
+</div>
+
+<!-- footer -->
+<footer id="footer">
+  <a href="https://github.com/romyilano/SudoRoomRenPyGame" target="_blank" rel="noopener noreferrer">★ GitHub</a>
+  &nbsp;·&nbsp;
+  <a href="https://sudoroom.org/wiki/SudoRoomVisualNovelGame" target="_blank" rel="noopener noreferrer">Wiki</a>
+  &nbsp;·&nbsp;
+  Made with ♥ at&nbsp;<a href="https://sudoroom.org" target="_blank" rel="noopener noreferrer">SudoRoom</a>
+</footer>
+
+<script>
+/* ── Sparkle particle system ─────────────────────────────────── */
+(function () {
+  'use strict';
+
+  const canvas = document.getElementById('sparkle-canvas');
+  const ctx    = canvas.getContext('2d');
+
+  const COLORS = ['#ff8fcc','#c98fff','#8fd4ff','#fffb8f','#aaffb0','#ffffff','#ffb3e6'];
+  const MAX_PARTICLES = 140;
+
+  let W, H;
+  const particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* Particle factory */
+  function createParticle(x, y, burst) {
+    const angle  = Math.random() * Math.PI * 2;
+    const speed  = burst ? (Math.random() * 4 + 1) : (Math.random() * 0.6 + 0.15);
+    const size   = burst ? (Math.random() * 5 + 2) : (Math.random() * 3.5 + 1);
+    const life   = burst ? (Math.random() * 40 + 20) : (Math.random() * 120 + 60);
+    return {
+      x: x  ?? (Math.random() * W),
+      y: y  ?? (Math.random() * H),
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - (burst ? 0 : Math.random() * 0.3),
+      size,
+      life,
+      maxLife: life,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      twinkleOffset: Math.random() * Math.PI * 2,
+      shape: Math.random() < 0.35 ? 'star' : 'circle',
+    };
+  }
+
+  /* Seed ambient particles */
+  for (let i = 0; i < MAX_PARTICLES; i++) {
+    const p = createParticle();
+    p.life = Math.random() * p.maxLife; // stagger
+    particles.push(p);
+  }
+
+  /* Draw a 4-point star */
+  function drawStar(ctx, x, y, r, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle   = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur  = r * 3;
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const rad = i % 2 === 0 ? r : r * 0.4;
+      const a   = (Math.PI / 4) * i - Math.PI / 8;
+      if (i === 0) ctx.moveTo(x + rad * Math.cos(a), y + rad * Math.sin(a));
+      else          ctx.lineTo(x + rad * Math.cos(a), y + rad * Math.sin(a));
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /* Draw a glowing circle */
+  function drawCircle(ctx, x, y, r, color, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle   = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur  = r * 4;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  let frame = 0;
+
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    frame++;
+
+    /* Spawn new ambient particles to maintain count */
+    while (particles.length < MAX_PARTICLES) particles.push(createParticle());
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life--;
+
+      const progress = p.life / p.maxLife;
+      const twinkle  = 0.5 + 0.5 * Math.sin(frame * 0.12 + p.twinkleOffset);
+      const alpha    = progress * twinkle;
+
+      if (p.shape === 'star') {
+        drawStar(ctx, p.x, p.y, p.size, p.color, alpha);
+      } else {
+        drawCircle(ctx, p.x, p.y, p.size * 0.6, p.color, alpha);
+      }
+
+      if (p.life <= 0 || p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) {
+        particles.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+
+  /* Click / tap → burst of sparkles */
+  function burst(ex, ey) {
+    for (let i = 0; i < 22; i++) {
+      particles.push(createParticle(ex, ey, true));
+    }
+  }
+
+  document.addEventListener('click',     e => burst(e.clientX, e.clientY));
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    burst(t.clientX, t.clientY);
+  }, { passive: true });
+}());
+</script>
+</body>
+</html>
