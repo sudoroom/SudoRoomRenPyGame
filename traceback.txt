@@ -1,0 +1,21 @@
+﻿I'm sorry, but an uncaught exception occurred.
+
+While loading the script.
+IOError: [Errno 22] Invalid argument
+
+-- Full Traceback ------------------------------------------------------------
+
+Full traceback:
+  File "/Users/romyilano/Developer/python/renpy-6.16.5-sdk/renpy/bootstrap.py", line 265, in bootstrap
+    renpy.main.main()
+  File "/Users/romyilano/Developer/python/renpy-6.16.5-sdk/renpy/main.py", line 226, in main
+    renpy.game.script.load_script() # sets renpy.game.script.
+  File "/Users/romyilano/Developer/python/renpy-6.16.5-sdk/renpy/script.py", line 177, in load_script
+    self.load_appropriate_file(".rpyc", ".rpy", dir, fn, initcode)
+  File "/Users/romyilano/Developer/python/renpy-6.16.5-sdk/renpy/script.py", line 430, in load_appropriate_file
+    f.seek(-md5.digest_size, 2)
+IOError: [Errno 22] Invalid argument
+
+Darwin-13.0.0-x86_64-i386-64bit
+Ren'Py 6.16.5.525
+ 
