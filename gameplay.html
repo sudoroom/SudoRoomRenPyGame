@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SudoRoom: A Love Story</title>
+  <link rel="stylesheet" href="web/style.css" />
+</head>
+<body>
+
+<div id="game">
+  <!-- Background layers (two stacked for dissolve) -->
+  <div id="bg-layer">
+    <img id="bg-back" src="" alt="" />
+    <img id="bg-front" src="" alt="" />
+  </div>
+
+  <!-- Character sprites -->
+  <div id="char-layer"></div>
+
+  <!-- Dialogue box -->
+  <div id="dialogue-box">
+    <div id="char-name"></div>
+    <div id="dialogue-text"></div>
+    <div id="click-indicator">Click to continue &#9662;</div>
+  </div>
+
+  <!-- Menu overlay -->
+  <div id="menu-overlay"></div>
+
+  <!-- Click-to-start overlay (for audio autoplay policy) -->
+  <div id="start-overlay">
+    <h1>SudoRoom: A Love Story</h1>
+    <p>Click to start</p>
+  </div>
+</div>
+
+<a id="back-link" href="index.html">&larr; Back to Title</a>
+
+<!-- Story data must load before engine -->
+<script src="web/story.js"></script>
+<script src="web/engine.js"></script>
+
+</body>
+</html>
