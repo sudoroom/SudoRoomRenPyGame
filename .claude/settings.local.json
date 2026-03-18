@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ffmpeg -i game/assets/audio/organ-loop.wav -codec:a libmp3lame -b:a 128k -y web/audio/organ-loop.mp3)",
+      "Bash(node:*)"
+    ]
+  }
+}
